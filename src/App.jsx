@@ -1,9 +1,9 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import "./App.scss";
 import { lettersToMorse } from "./data/lettersToMorse.js";
 import { morseToLetters } from "./data/morseToLetters.js";
 import translate from "./utils/translate.js";
-// import Header from "./components/Header.jsx";
+import Footer from "./components/Header/Footer.jsx";
 
 function App() {
   const [input, setInput] = useState("");
@@ -13,10 +13,9 @@ function App() {
     <div className="container">
       <div className="bg-noise"></div>
       <div className="input">
-        {/* <Header /> */}
         <textarea
-          placeholder="type letters || morse code"
-          maxLength={400}
+          placeholder="type letters | morse code  "
+          maxLength={200}
           autoFocus
           id="morse-input"
           className="input__textarea"
@@ -35,6 +34,7 @@ function App() {
       <div className="output">
         <p>{output}</p>
       </div>
+      <Footer />
     </div>
   );
 }
