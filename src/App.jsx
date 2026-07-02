@@ -3,7 +3,7 @@ import "./App.scss";
 import { lettersToMorse } from "./data/lettersToMorse.js";
 import { morseToLetters } from "./data/morseToLetters.js";
 import translate from "./utils/translate.js";
-import Footer from "./components/Header/Footer.jsx";
+import Footer from "./components/Footer/Footer.jsx";
 
 function App() {
   const [input, setInput] = useState("");
@@ -12,6 +12,7 @@ function App() {
   return (
     <div className="container">
       <div className="bg-noise"></div>
+      <div className="glass"></div>
       <div className="input">
         <textarea
           placeholder="type letters | morse code  "

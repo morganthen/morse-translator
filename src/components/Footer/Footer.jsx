@@ -3,7 +3,7 @@ import styles from "./Footer.module.scss";
 export default function Footer() {
   return (
     <footer className={styles.footer}>
-      <p className={styles.footer__title}>Morse Translator</p>
+      <p className={styles.footer__title}>MORSE TRANSLATOR</p>
 
       <a
         href="https://github.com/morganthen"
