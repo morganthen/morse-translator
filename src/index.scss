@@ -1,2 +1,6 @@
 @use './scss/normalize';
 @use './scss/variables/variables' as *;
+
+body {
+  font-family: "Space Mono", monospace;
+}
