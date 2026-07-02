@@ -1,4 +1,5 @@
 @use "../../scss/mixins/media.scss" as m;
+@use "../../scss/variables/colors.scss" as c;
 
 .footer {
   display: flex;
@@ -38,6 +39,7 @@
     padding-bottom: 8px;
     margin: 0;
     opacity: 1;
+    color: c.$text-sharp;
     @include m.md {
       font-size: 2.5rem;
       display: flex;
