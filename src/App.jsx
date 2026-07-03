@@ -12,7 +12,7 @@ function App() {
   return (
     <div className="container">
       <div className="bg-noise"></div>
-      <div className="glass"></div>
+      {/* <div className="glass"></div> */}
       <div className="input">
         <textarea
           placeholder="type letters | morse code  "
