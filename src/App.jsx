@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./App.scss";
-import { lettersToMorse } from "./data/lettersToMorse.js";
-import { morseToLetters } from "./data/morseToLetters.js";
+import { lettersToMorse } from "./data/alphanumToMorse.js";
+import { morseToLetters } from "./data/morseToAlphanum.js";
 import translate from "./utils/translate.js";
 import Footer from "./components/Footer/Footer.jsx";
 

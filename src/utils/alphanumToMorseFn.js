@@ -1,6 +1,6 @@
-import { lettersToMorse } from "../data/lettersToMorse";
+import { lettersToMorse } from "../data/alphanumToMorse";
 
-export default function lettersToMorseFn(str) {
+export default function alphanumToMorseFn(str) {
   const lettersArr = str.toUpperCase().split("");
   return lettersArr
     .map((letter) => {
