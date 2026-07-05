@@ -26,14 +26,16 @@ A real-time bidirectional Morse code translator built as part of the [Nology](ht
 ## How It Works
 
 ```
-User types → translate() → regex auto-detection → lookup table → output
+User types → translate() → trim + regex auto-detection → pure function → lookup table → output
 ```
 
-1. `translate()` receives the raw input string
+1. `translate()` receives the raw input string and trims leading/trailing whitespace
 2. A regex (`/^[.-]/`) checks if the string starts with `.` or `-`
-3. **If Morse**: splits on spaces, maps each Morse token to its letter via `morseToLetters`
-4. **If letters**: uppercases, splits into individual characters, maps each to Morse via `lettersToMorse` (unknown characters become `#`), joins with spaces
+3. **If Morse**: delegates to `morseToAlphanumFn()`, which splits on spaces and maps each Morse token to its letter/number/symbol via the `morseToAlphanum` lookup table. Unknown Morse codes become `#`.
+4. **If letters**: delegates to `alphanumToMorseFn()`, which uppercases the string, splits into individual characters, and maps each to its Morse equivalent via the `alphanumToMorse` lookup table. Unsupported characters become `#`.
 5. Result is set to state and rendered in the output pane
+
+The two translation functions (`alphanumToMorseFn`, `morseToAlphanumFn`) are **pure functions** — no side effects, no state, just input → output. `translate()` is the thin impure shell that wires them to React state.
 
 ## Project Structure
 
@@ -48,10 +50,14 @@ src/
 │       ├── Footer.jsx               # Footer component (GitHub link, title)
 │       └── Footer.module.scss       # Footer styles (CSS Modules)
 ├── data/
-│   ├── lettersToMorse.js            # Letter → Morse lookup table
-│   └── morseToLetters.js            # Morse → Letter lookup table
+│   ├── alphanumToMorse.js           # A-Z, 0-9, punctuation → Morse lookup (40+ entries)
+│   └── morseToAlphanum.js           # Morse → A-Z, 0-9, punctuation lookup (reverse)
 ├── utils/
-│   └── translate.js                 # Core translation logic
+│   ├── translate.js                 # Thin impure shell — trims, detects direction, delegates
+│   ├── alphanumToMorseFn.js         # Pure: English string → Morse string
+│   ├── alphanumToMorseFn.test.js    # Unit tests (10 cases)
+│   ├── morseToAlphanumFn.js         # Pure: Morse string → English string
+│   └── morseToAlphanumFn.test.js    # Unit tests (8 cases)
 └── scss/
     ├── _normalize.scss              # modern-normalize v3
     ├── mixins/
@@ -81,6 +87,21 @@ Opens at `http://localhost:5173`.
 - **CSS Modules for components** — Footer uses a `.module.scss` file for locally-scoped class names, preventing style leaks. App-level styles use regular SCSS with BEM naming.
 - **Vertical footer on mobile** — uses `writing-mode: vertical-rl` + `rotate(180deg)` so the footer reads upward along the right edge of the screen. At 768px+ it switches to a horizontal centered footer with a radial gradient background.
 
+## Testing
+
+Jest with Babel (zero-config setup, Alex's approach). Test files co-located with source:
+
+```bash
+npm test              # run once
+npm run test:watch    # re-run on file changes
+```
+
+**Setup:** `jest` + `babel-jest` + `@babel/core` + `@babel/preset-env`. A `babel.config.cjs` at root bridges ESM `import`/`export` to CommonJS for Jest. No `jest.config.*` file needed — zero config beyond the `"test"` script in `package.json`.
+
+**What's tested:** The two pure translation functions (`alphanumToMorseFn`, `morseToAlphanumFn`) — letters, numbers, symbols, case insensitivity, spaces, empty strings, invalid characters, and invalid Morse.
+
+**A testing win (Jul 5, 2026):** Writing the empty-string test for `morseToAlphanumFn` revealed a bug the mental model missed — `"".split(" ")` produces `[""]`, which mapped to `undefined` and hit the `?? "#"` fallback, so `""` returned `"#"` instead of `""`. Fixed with a guard clause: `if (str.length === 0) return ""`. This is exactly why you test — the code did something you didn't expect, and now it does what you thought it did.
+
 ## Nology Context
 
 This project was built to demonstrate:
@@ -88,6 +109,8 @@ This project was built to demonstrate:
 - React state management (`useState`)
 - Controlled form inputs
 - Data transformation with lookup tables
+- **Unit testing with Jest** — pure function extraction, test co-location, Babel bridge setup
+- **Separation of concerns** — pure translation logic extracted from React wiring for testability
 - SCSS architecture (partials, mixins, variables, BEM)
 - CSS Modules for component-scoped styling
 - Responsive design with mobile-first breakpoints
