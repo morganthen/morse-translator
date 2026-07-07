@@ -21,6 +21,7 @@ export const lettersToMorse = {
   S: "...",
   T: "-",
   U: "..-",
+  V: "...-",
   W: ".--",
   X: "-..-",
   Y: "-.--",
